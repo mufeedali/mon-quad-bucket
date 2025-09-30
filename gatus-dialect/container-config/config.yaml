@@ -1,0 +1,46 @@
+storage:
+    type: sqlite
+    path: /data/data.db
+
+alerting:
+    ntfy:
+        topic: dialect-uptime
+        url: https://ntfy.${KUMO_DOMAIN_URL}
+        token: ${NTFY_UPTIME_TOKEN}
+        default-alert:
+            enabled: true
+            priority: 4
+            send-on-resolved: true
+
+endpoints:
+    - name: Site
+      url: https://${DIALECT_DOMAIN_URL}
+      interval: 1m
+      conditions:
+          - "[STATUS] == 200"
+      alerts:
+          - type: ntfy
+
+    - name: LibreTranslate
+      url: https://lt.${DIALECT_DOMAIN_URL}
+      interval: 1m
+      conditions:
+          - "[STATUS] == 200"
+      alerts:
+          - type: ntfy
+
+    - name: SimplyTranslate
+      url: https://st.${DIALECT_DOMAIN_URL}
+      interval: 1m
+      conditions:
+          - "[STATUS] == 200"
+      alerts:
+          - type: ntfy
+
+    - name: Lingva Translate
+      url: https://lingva.${DIALECT_DOMAIN_URL}
+      interval: 1m
+      conditions:
+          - "[STATUS] == 200"
+      alerts:
+          - type: ntfy

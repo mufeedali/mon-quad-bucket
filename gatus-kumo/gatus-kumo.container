@@ -1,0 +1,29 @@
+[Unit]
+Description=Gatus - Status Page - Kumo
+
+[Service]
+EnvironmentFile=%h/.config/containers/systemd/.env
+Restart=on-abnormal
+TimeoutStartSec=60s
+TimeoutStopSec=30s
+
+[Install]
+WantedBy=multi-user.target default.target
+
+[Container]
+ContainerName=gatus-kumo
+Image=ghcr.io/twin/gatus:latest
+AutoUpdate=registry
+Pull=newer
+
+Network=shared-network
+
+Volume=./container-config/:/config
+Volume=./container-data/:/data
+
+EnvironmentFile=%h/.config/containers/systemd/.env
+
+# Traefik labels
+Label="traefik.enable=true"
+Label="traefik.http.routers.gatus-kumo.rule=Host(`status.${KUMO_DOMAIN_URL}`)"
+Label="traefik.http.routers.gatus-kumo.entrypoints=web-secure,web-secure-internal"

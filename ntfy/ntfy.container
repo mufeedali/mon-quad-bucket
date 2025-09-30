@@ -1,0 +1,30 @@
+[Unit]
+Description=Ntfy - Notifications tool
+
+[Service]
+EnvironmentFile=%h/.config/containers/systemd/.env
+Restart=on-abnormal
+TimeoutStartSec=60s
+TimeoutStopSec=30s
+
+[Install]
+WantedBy=multi-user.target default.target
+
+[Container]
+ContainerName=ntfy
+Image=docker.io/binwiederhier/ntfy:latest
+Exec=serve
+AutoUpdate=registry
+Pull=newer
+
+EnvironmentFile=.env
+
+Network=shared-network
+
+Volume=./container-data/ntfy:/var/lib/ntfy
+
+# Traefik labels
+Label="traefik.enable=true"
+Label="traefik.http.routers.ntfy.rule=Host(`ntfy.${KUMO_DOMAIN_URL}`)"
+Label="traefik.http.routers.ntfy.entrypoints=web-secure,web-secure-internal"
+Label="traefik.http.services.ntfy.loadbalancer.server.port=8080"

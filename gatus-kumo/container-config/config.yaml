@@ -1,0 +1,120 @@
+storage:
+    type: sqlite
+    path: /data/data.db
+
+alerting:
+    ntfy:
+        topic: kumo-uptime
+        url: https://ntfy.${KUMO_DOMAIN_URL}
+        token: ${NTFY_UPTIME_TOKEN}
+        default-alert:
+            enabled: true
+            priority: 4
+            send-on-resolved: true
+
+endpoints:
+    - name: Site
+      url: https://${KUMO_DOMAIN_URL}
+      interval: 1m
+      conditions:
+          - "[STATUS] == 200"
+      alerts:
+          - type: ntfy
+
+    - name: Nextcloud
+      url: https://cloud.${KUMO_DOMAIN_URL}
+      interval: 1m
+      conditions:
+          - "[STATUS] == 200"
+      # Storage Share goes down very often...
+      # Yeah, that's depressing.
+      # alerts:
+      #     - type: ntfy
+
+    - name: Actual Budget
+      url: https://actual.${KUMO_DOMAIN_URL}/health
+      interval: 1m
+      conditions:
+          - "[STATUS] == 200"
+          - "[BODY].status == UP"
+      alerts:
+          - type: ntfy
+
+    - name: Miniflux
+      url: https://news.${KUMO_DOMAIN_URL}/healthcheck
+      interval: 1m
+      conditions:
+          - "[STATUS] == 200"
+          - "[BODY] == OK"
+      alerts:
+          - type: ntfy
+
+    - name: Pocket ID
+      url: https://id.${KUMO_DOMAIN_URL}
+      interval: 1m
+      conditions:
+          - "[STATUS] == 200"
+      alerts:
+          - type: ntfy
+
+    - name: Obsidian LiveSync
+      url: https://livesync.${KUMO_DOMAIN_URL}/_up
+      interval: 1m
+      conditions:
+          # FIXME: Even their ping endpoint needs auth...
+          - "[STATUS] == 401"
+      alerts:
+          - type: ntfy
+
+    - name: Memos
+      url: https://memos.${KUMO_DOMAIN_URL}/healthz
+      interval: 1m
+      conditions:
+          - "[STATUS] == 200"
+          - "[BODY] == Service ready."
+      alerts:
+          - type: ntfy
+
+    - name: Immich
+      url: https://photos.${KUMO_DOMAIN_URL}/api/server/ping
+      interval: 1m
+      conditions:
+          - "[STATUS] == 200"
+          - "[BODY].res == pong"
+      alerts:
+          - type: ntfy
+
+    - name: Ntfy
+      url: https://ntfy.${KUMO_DOMAIN_URL}/v1/health
+      interval: 1m
+      conditions:
+          - "[STATUS] == 200"
+          - "[BODY].healthy == true"
+      alerts:
+          - type: ntfy
+
+    - name: Vaultwarden
+      url: https://vault.${KUMO_DOMAIN_URL}/alive
+      interval: 1m
+      conditions:
+          - "[STATUS] == 200"
+      alerts:
+          - type: ntfy
+
+    - name: Joplin
+      url: https://joplin.${KUMO_DOMAIN_URL}/api/ping
+      interval: 1m
+      conditions:
+          - "[STATUS] == 200"
+          - "[BODY].status == ok"
+      alerts:
+          - type: ntfy
+
+    - name: Firefly
+      url: https://firefly.${KUMO_DOMAIN_URL}/health
+      interval: 1m
+      conditions:
+          - "[STATUS] == 200"
+          - "[BODY] == OK"
+      alerts:
+          - type: ntfy
